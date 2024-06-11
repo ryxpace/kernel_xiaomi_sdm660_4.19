@@ -18,6 +18,10 @@
 #include "pnode.h"
 #include "internal.h"
 
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
+#include <linux/susfs.h>
+#endif
+
 static __poll_t mounts_poll(struct file *file, poll_table *wait)
 {
 	struct seq_file *m = file->private_data;
@@ -102,6 +106,13 @@ static int show_vfsmnt(struct seq_file *m, struct vfsmount *mnt)
 	struct super_block *sb = mnt_path.dentry->d_sb;
 	int err;
 
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
+	if (susfs_is_suspicious_mount(mnt, &p->root)) {
+		err = SEQ_SKIP;
+		goto out;
+	}
+#endif
+
 	if (sb->s_op->show_devname) {
 		err = sb->s_op->show_devname(m, mnt_path.dentry);
 		if (err)
@@ -137,6 +148,13 @@ static int show_mountinfo(struct seq_file *m, struct vfsmount *mnt)
 	struct super_block *sb = mnt->mnt_sb;
 	struct path mnt_path = { .dentry = mnt->mnt_root, .mnt = mnt };
 	int err;
+
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
+	if (susfs_is_suspicious_mount(mnt, &p->root)) {
+		err = SEQ_SKIP;
+		goto out;
+	}
+#endif
 
 	seq_printf(m, "%i %i %u:%u ", r->mnt_id, r->mnt_parent->mnt_id,
 		   MAJOR(sb->s_dev), MINOR(sb->s_dev));
@@ -201,6 +219,13 @@ static int show_vfsstat(struct seq_file *m, struct vfsmount *mnt)
 	struct path mnt_path = { .dentry = mnt->mnt_root, .mnt = mnt };
 	struct super_block *sb = mnt_path.dentry->d_sb;
 	int err;
+
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
+	if (susfs_is_suspicious_mount(mnt, &p->root)) {
+		err = SEQ_SKIP;
+		goto out;
+	}
+#endif
 
 	/* device */
 	if (sb->s_op->show_devname) {

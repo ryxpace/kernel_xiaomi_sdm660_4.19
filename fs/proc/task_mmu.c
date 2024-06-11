@@ -28,6 +28,11 @@
 
 #define SEQ_PUT_DEC(str, val) \
 		seq_put_decimal_ull_width(m, str, (val) << (PAGE_SHIFT-10), 8)
+
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
+#include <linux/susfs.h>
+#endif
+
 void task_mem(struct seq_file *m, struct mm_struct *mm)
 {
 	unsigned long text, lib, swap, anon, file, shmem;
@@ -501,6 +506,10 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
 	unsigned long start, end;
 	dev_t dev = 0;
 	const char *name = NULL;
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
+	char tmpname[SUSFS_MAX_LEN_PATHNAME];
+	int ret = 0;
+#endif
 
 	if (file) {
 		struct inode *inode = file_inode(vma->vm_file);
@@ -511,8 +520,21 @@ show_map_vma(struct seq_file *m, struct vm_area_struct *vma)
 
 	start = vma->vm_start;
 	end = vma->vm_end;
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
+    ret = susfs_suspicious_maps(ino, &ino, &dev, tmpname);
+#endif
+
 	if (show_vma_header_prefix(m, start, end, flags, pgoff, dev, ino))
 		return;
+
+#if defined(CONFIG_KSU) && defined(CONFIG_KSU_SUSFS)
+	if (ret) {
+		seq_pad(m, ' ');
+		seq_puts(m, tmpname);
+		seq_putc(m, '\n');
+		return;
+	}
+#endif
 
 	/*
 	 * Print the dentry name for named mappings, and a
