@@ -51,8 +51,8 @@
 			compatible = "qcom,kryo260";
 			reg = <0x0 0x0>;
 			enable-method = "psci";
-			efficiency = <636>;
-			capacity-dmips-mhz = <636>;
+			efficiency = <618>;
+			capacity-dmips-mhz = <618>;
 			sched-energy-costs = <&CPU_COST_0>;
 			qcom,lmh-dcvs = <&lmh_dcvs0>;
 			next-level-cache = <&L2_0>;
@@ -78,8 +78,8 @@
 			compatible = "qcom,kryo260";
 			reg = <0x0 0x1>;
 			enable-method = "psci";
-			efficiency = <636>;
-			capacity-dmips-mhz = <636>;
+			efficiency = <618>;
+			capacity-dmips-mhz = <618>;
 			sched-energy-costs = <&CPU_COST_0>;
 			qcom,lmh-dcvs = <&lmh_dcvs0>;
 			next-level-cache = <&L2_0>;
@@ -97,8 +97,8 @@
 			compatible = "qcom,kryo260";
 			reg = <0x0 0x2>;
 			enable-method = "psci";
-			efficiency = <636>;
-			capacity-dmips-mhz = <636>;
+			efficiency = <618>;
+			capacity-dmips-mhz = <618>;
 			sched-energy-costs = <&CPU_COST_0>;
 			qcom,lmh-dcvs = <&lmh_dcvs0>;
 			next-level-cache = <&L2_0>;
@@ -116,8 +116,8 @@
 			compatible = "qcom,kryo260";
 			reg = <0x0 0x3>;
 			enable-method = "psci";
-			efficiency = <636>;
-			capacity-dmips-mhz = <636>;
+			efficiency = <618>;
+			capacity-dmips-mhz = <618>;
 			sched-energy-costs = <&CPU_COST_0>;
 			qcom,lmh-dcvs = <&lmh_dcvs0>;
 			next-level-cache = <&L2_0>;
@@ -254,11 +254,12 @@
 
 		CPU_COST_0: core-cost0 {
 			busy-cost-data = <
-				 633600	 27
-				 902400	 51
+				 633600	 40
+				 902400	 60
 				1113600	 71
-				1401600	101
-				1536000	132
+				1401600	120
+				1536000	141
+				1612800 157
 				1747200	176
 				1843200	201
 			>;
@@ -266,9 +267,10 @@
 
 		CPU_COST_1: core-cost1 {
 			busy-cost-data = <
-				1113600	244
-				1401600	326
-				1747200	498
+				1113600	243
+				1401600	359
+				1747200	501
+				1804800 643
 				1958400	677
 				2150400	782
 				2208000	977
